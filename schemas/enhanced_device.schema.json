@@ -1,0 +1,712 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COMI Enhanced Device Schema",
+  "description": "Enhanced JSON Schema for agricultural devices with Farming Simulator-style attachment systems",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "type": "string",
+      "description": "Device category classification"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the device category"
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EnhancedDevice"
+      }
+    }
+  },
+  "required": ["schema_version", "category", "devices"],
+  "definitions": {
+    "EnhancedDevice": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "description": "Unique device identifier"
+        },
+        "vendor": {
+          "$ref": "#/definitions/Vendor"
+        },
+        "type": {
+          "$ref": "#/definitions/DeviceType"
+        },
+        "device_category": {
+          "$ref": "#/definitions/DeviceCategory"
+        },
+        "tractor_specifications": {
+          "$ref": "#/definitions/TractorSpecifications",
+          "description": "Additional specifications for tractor devices"
+        },
+        "implement_specifications": {
+          "$ref": "#/definitions/ImplementSpecifications",
+          "description": "Additional specifications for implement devices"
+        },
+        "operating_width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Operating width in meters"
+        },
+        "attachment_points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AttachmentPoint"
+          },
+          "description": "Available attachment points on this device"
+        },
+        "attachment_requirements": {
+          "$ref": "#/definitions/AttachmentRequirements",
+          "description": "Requirements for attaching this device"
+        },
+        "capability_index": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Device capability rating (1-5)"
+        },
+        "power_specifications": {
+          "$ref": "#/definitions/PowerSpecifications"
+        },
+        "weight_specifications": {
+          "$ref": "#/definitions/WeightSpecifications"
+        },
+        "performance_characteristics": {
+          "$ref": "#/definitions/PerformanceCharacteristics"
+        },
+        "economic_data": {
+          "$ref": "#/definitions/EconomicData"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "required": ["uuid", "vendor", "type", "device_category", "power_specifications", "weight_specifications", "version"]
+    },
+    "Vendor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pub_key": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "name"]
+    },
+    "DeviceType": {
+      "type": "object",
+      "properties": {
+        "machine_maintype": {
+          "type": "string"
+        },
+        "auxiliary_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "machine_key": {
+          "type": ["string", "null"]
+        },
+        "machine_serial": {
+          "type": "string"
+        },
+        "machine_model": {
+          "type": "string"
+        }
+      },
+      "required": ["machine_maintype", "machine_serial", "machine_model"]
+    },
+    "DeviceCategory": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["independent", "implement", "hybrid"]
+        },
+        "can_operate_alone": {
+          "type": "boolean"
+        },
+        "requires_power_source": {
+          "type": "boolean"
+        },
+        "can_provide_power": {
+          "type": "boolean"
+        }
+      },
+      "required": ["category", "can_operate_alone", "requires_power_source", "can_provide_power"]
+    },
+    "TractorSpecifications": {
+      "type": "object",
+      "properties": {
+        "size_class": {
+          "type": "string",
+          "enum": ["SMALL", "MEDIUM", "LARGE", "SUPER_LARGE"],
+          "description": "Tractor size classification"
+        },
+        "power_range": {
+          "type": "object",
+          "properties": {
+            "min_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_hp": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": ["min_hp", "max_hp"]
+        },
+        "attachment_capabilities": {
+          "type": "object",
+          "properties": {
+            "front_loader_compatible": {
+              "type": "boolean"
+            },
+            "front_3pt_available": {
+              "type": "boolean"
+            },
+            "rear_3pt_available": {
+              "type": "boolean"
+            },
+            "front_pto_available": {
+              "type": "boolean"
+            },
+            "rear_pto_available": {
+              "type": "boolean"
+            },
+            "narrow_tires_available": {
+              "type": "boolean"
+            },
+            "ballast_options": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["FRONT_WEIGHT", "REAR_WEIGHT", "WHEEL_WEIGHTS", "LIQUID_BALLAST"]
+              }
+            }
+          }
+        },
+        "transmission_type": {
+          "type": "string",
+          "enum": ["MANUAL", "POWERSHIFT", "CVT", "HYDROSTATIC"]
+        },
+        "four_wheel_drive": {
+          "type": "boolean"
+        },
+        "cabin_features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["size_class", "power_range", "attachment_capabilities"]
+    },
+    "ImplementSpecifications": {
+      "type": "object",
+      "properties": {
+        "implement_type": {
+          "type": "string",
+          "enum": ["TILLAGE", "PLANTING", "HARVESTING", "APPLICATION", "TRANSPORT", "SPECIALTY"]
+        },
+        "working_depth_range": {
+          "type": "object",
+          "properties": {
+            "min_depth_cm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_depth_cm": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "transport_dimensions": {
+          "type": "object",
+          "properties": {
+            "transport_width_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "transport_height_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "transport_length_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "folding_mechanism": {
+          "type": "boolean",
+          "description": "Whether implement can fold for transport"
+        },
+        "road_legal": {
+          "type": "boolean",
+          "description": "Whether implement can legally travel on roads"
+        }
+      }
+    },
+    "AttachmentPoint": {
+      "type": "object",
+      "properties": {
+        "point_id": {
+          "type": "string",
+          "description": "Unique identifier for this attachment point"
+        },
+        "point_type": {
+          "type": "string",
+          "enum": ["THREE_POINT_HITCH", "DRAWBAR_BALL", "DRAWBAR_BOLT", "FRONT_LOADER_MOUNT", "PTO", "HYDRAULIC_QUICK_CONNECT", "ISOBUS", "CUSTOM"],
+          "description": "Type of attachment point"
+        },
+        "position": {
+          "type": "string",
+          "enum": ["FRONT", "REAR", "LEFT", "RIGHT", "TOP"],
+          "description": "Position on the machine"
+        },
+        "lifting_capacity": {
+          "type": "object",
+          "properties": {
+            "max_lift_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_lift_force_n": {
+              "type": "number",
+              "minimum": 0
+            },
+            "lift_height_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "power_provision": {
+          "type": "object",
+          "properties": {
+            "power_available_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "power_type": {
+              "type": "string",
+              "enum": ["PTO_540", "PTO_1000", "HYDRAULIC", "ELECTRIC", "MECHANICAL"]
+            },
+            "hydraulic_flow_lpm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "hydraulic_pressure_bar": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "size_constraints": {
+          "type": "object",
+          "properties": {
+            "max_implement_width_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_implement_weight_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_implement_length_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "control_integration": {
+          "type": "object",
+          "properties": {
+            "isobus_compatible": {
+              "type": "boolean"
+            },
+            "manual_controls": {
+              "type": "boolean"
+            },
+            "automatic_control": {
+              "type": "boolean"
+            }
+          }
+        },
+        "requires_upgrade": {
+          "type": "boolean",
+          "description": "Whether this attachment point requires an upgrade to use"
+        },
+        "upgrade_cost": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cost of upgrade if required"
+        }
+      },
+      "required": ["point_id", "point_type", "position"]
+    },
+    "AttachmentRequirements": {
+      "type": "object",
+      "properties": {
+        "required_attachment_type": {
+          "type": "string",
+          "enum": ["THREE_POINT_HITCH", "DRAWBAR_BALL", "DRAWBAR_BOLT", "FRONT_LOADER_MOUNT", "PTO", "HYDRAULIC_QUICK_CONNECT", "ISOBUS"]
+        },
+        "required_position": {
+          "type": "string",
+          "enum": ["FRONT", "REAR", "LEFT", "RIGHT", "TOP"]
+        },
+        "minimum_lift_capacity_kg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "required_power": {
+          "type": "object",
+          "properties": {
+            "absolute_minimum_hp": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Minimum power required for operation (device won't work below this)"
+            },
+            "optimal_minimum_hp": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Minimum power for optimal performance"
+            },
+            "power_type": {
+              "type": "string",
+              "enum": ["PTO_540", "PTO_1000", "HYDRAULIC", "ELECTRIC", "MECHANICAL"]
+            }
+          }
+        },
+        "stability_requirements": {
+          "type": "object",
+          "properties": {
+            "minimum_tractor_weight_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "ballast_required": {
+              "type": "boolean"
+            },
+            "ballast_type": {
+              "type": "string",
+              "enum": ["FRONT_WEIGHT", "REAR_WEIGHT", "WHEEL_WEIGHTS", "LIQUID_BALLAST"]
+            },
+            "ballast_weight_kg": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "compatibility_restrictions": {
+          "type": "object",
+          "properties": {
+            "excluded_tractor_sizes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["SMALL", "MEDIUM", "LARGE", "SUPER_LARGE"]
+              }
+            },
+            "brand_restrictions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "model_specific_compatibility": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": ["required_attachment_type", "required_power"]
+    },
+    "PowerSpecifications": {
+      "type": "object",
+      "properties": {
+        "power_output": {
+          "type": "object",
+          "properties": {
+            "max_power_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "rated_power_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "power_curve": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rpm": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "power_hp": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "torque_nm": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "power_requirements": {
+          "type": "object",
+          "properties": {
+            "absolute_minimum_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "optimal_minimum_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "efficiency_curve": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "power_hp": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "efficiency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "fuel_consumption": {
+          "type": "object",
+          "properties": {
+            "idle_lph": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_load_lph": {
+              "type": "number",
+              "minimum": 0
+            },
+            "consumption_curve": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "load_percentage": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "consumption_lph": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "WeightSpecifications": {
+      "type": "object",
+      "properties": {
+        "operating_weight_kg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "transport_weight_kg": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weight_distribution": {
+          "type": "object",
+          "properties": {
+            "front_axle_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "rear_axle_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "center_of_gravity": {
+              "type": "object",
+              "properties": {
+                "x_m": {
+                  "type": "number"
+                },
+                "y_m": {
+                  "type": "number"
+                },
+                "z_m": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "ground_pressure": {
+          "type": "object",
+          "properties": {
+            "standard_tires_kpa": {
+              "type": "number",
+              "minimum": 0
+            },
+            "wide_tires_kpa": {
+              "type": "number",
+              "minimum": 0
+            },
+            "tracks_kpa": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "stability_factors": {
+          "type": "object",
+          "properties": {
+            "static_stability_factor": {
+              "type": "number",
+              "minimum": 0
+            },
+            "dynamic_stability_factor": {
+              "type": "number",
+              "minimum": 0
+            },
+            "tip_angle_degrees": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 90
+            }
+          }
+        }
+      },
+      "required": ["operating_weight_kg"]
+    },
+    "PerformanceCharacteristics": {
+      "type": "object",
+      "properties": {
+        "speed_ranges": {
+          "type": "object",
+          "properties": {
+            "max_field_speed_kmh": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_road_speed_kmh": {
+              "type": "number",
+              "minimum": 0
+            },
+            "optimal_working_speed_kmh": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "capacity_ratings": {
+          "type": "object",
+          "properties": {
+            "theoretical_capacity_ha_h": {
+              "type": "number",
+              "minimum": 0
+            },
+            "field_efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "effective_capacity_ha_h": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "turning_characteristics": {
+          "type": "object",
+          "properties": {
+            "turning_radius_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "headland_time_s": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "EconomicData": {
+      "type": "object",
+      "properties": {
+        "purchase_price": {
+          "type": "number",
+          "minimum": 0
+        },
+        "annual_depreciation_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "maintenance_cost_per_hour": {
+          "type": "number",
+          "minimum": 0
+        },
+        "insurance_cost_annual": {
+          "type": "number",
+          "minimum": 0
+        },
+        "resale_value_curve": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "age_years": {
+                "type": "number",
+                "minimum": 0
+              },
+              "value_percentage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

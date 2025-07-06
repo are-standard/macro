@@ -1,0 +1,489 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COMI Equipment Chain Schema",
+  "description": "JSON Schema for defining multi-machine operation chains and coordination patterns",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "chain_id": {
+      "type": "string",
+      "description": "Unique identifier for the equipment chain"
+    },
+    "chain_name": {
+      "type": "string",
+      "description": "Human-readable name for the chain"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the chain purpose and operation"
+    },
+    "operation_type": {
+      "type": "string",
+      "description": "Primary operation this chain performs"
+    },
+    "chain_type": {
+      "type": "string",
+      "enum": ["SEQUENTIAL", "PARALLEL", "COORDINATED", "CONVOY"],
+      "description": "Type of coordination between equipment"
+    },
+    "participants": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ChainParticipant"
+      },
+      "description": "Equipment and roles in the chain"
+    },
+    "coordination_rules": {
+      "$ref": "#/definitions/CoordinationRules"
+    },
+    "synchronization_points": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/SynchronizationPoint"
+      },
+      "description": "Points where equipment must coordinate"
+    },
+    "performance_metrics": {
+      "$ref": "#/definitions/PerformanceMetrics"
+    },
+    "safety_requirements": {
+      "$ref": "#/definitions/SafetyRequirements"
+    },
+    "applicable_crops": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Crops this chain can be used for"
+    },
+    "field_requirements": {
+      "$ref": "#/definitions/FieldRequirements"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    }
+  },
+  "required": ["schema_version", "chain_id", "chain_name", "operation_type", "chain_type", "participants", "version"],
+  "definitions": {
+    "ChainParticipant": {
+      "type": "object",
+      "properties": {
+        "participant_id": {
+          "type": "string",
+          "description": "Unique identifier for this participant in the chain"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["PRIMARY", "SUPPORT", "TRANSPORT", "AUXILIARY"],
+          "description": "Role of this participant in the operation"
+        },
+        "equipment_type": {
+          "type": "string",
+          "description": "Type of equipment required"
+        },
+        "equipment_requirements": {
+          "type": "object",
+          "properties": {
+            "device_category": {
+              "type": "string",
+              "enum": ["independent", "implement", "hybrid"]
+            },
+            "required_capabilities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "min_power_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_power_hp": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required_attachments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sequence_order": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Order in which this participant operates"
+        },
+        "coordination_behavior": {
+          "type": "string",
+          "enum": ["LEAD", "FOLLOW", "PARALLEL", "ON_DEMAND"],
+          "description": "How this participant coordinates with others"
+        },
+        "follow_target": {
+          "type": "string",
+          "description": "Participant ID to follow (if coordination_behavior is FOLLOW)"
+        },
+        "operating_distance": {
+          "type": "object",
+          "properties": {
+            "min_distance_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_distance_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "optimal_distance_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "operator_requirements": {
+          "type": "object",
+          "properties": {
+            "skill_level": {
+              "type": "string",
+              "enum": ["novice", "intermediate", "expert"]
+            },
+            "certifications": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "coordination_skills": {
+              "type": "boolean",
+              "description": "Whether operator needs coordination training"
+            }
+          }
+        }
+      },
+      "required": ["participant_id", "role", "equipment_type", "sequence_order", "coordination_behavior"]
+    },
+    "CoordinationRules": {
+      "type": "object",
+      "properties": {
+        "startup_sequence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step": {
+                "type": "integer"
+              },
+              "participant_id": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "wait_conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "operational_rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule_id": {
+                "type": "string"
+              },
+              "condition": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "applies_to": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "shutdown_sequence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step": {
+                "type": "integer"
+              },
+              "participant_id": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "emergency_procedures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "trigger_condition": {
+                "type": "string"
+              },
+              "response_action": {
+                "type": "string"
+              },
+              "affected_participants": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "SynchronizationPoint": {
+      "type": "object",
+      "properties": {
+        "sync_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "trigger_condition": {
+          "type": "string",
+          "description": "Condition that triggers this synchronization"
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Participant IDs that must synchronize"
+        },
+        "sync_type": {
+          "type": "string",
+          "enum": ["WAIT_FOR_ALL", "SIGNAL_CONTINUE", "CAPACITY_TRANSFER", "POSITION_ALIGNMENT"],
+          "description": "Type of synchronization required"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum time to wait for synchronization"
+        },
+        "location_type": {
+          "type": "string",
+          "enum": ["FIELD_EDGE", "FIELD_CENTER", "UNLOAD_POINT", "MOBILE"],
+          "description": "Where synchronization occurs"
+        }
+      },
+      "required": ["sync_id", "name", "trigger_condition", "participants", "sync_type"]
+    },
+    "PerformanceMetrics": {
+      "type": "object",
+      "properties": {
+        "efficiency_metrics": {
+          "type": "object",
+          "properties": {
+            "expected_field_efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Expected field efficiency as percentage"
+            },
+            "capacity_hectares_per_hour": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fuel_consumption_l_per_hectare": {
+              "type": "number",
+              "minimum": 0
+            },
+            "labor_hours_per_hectare": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "quality_metrics": {
+          "type": "object",
+          "properties": {
+            "uniformity_index": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "overlap_percentage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "miss_percentage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        },
+        "coordination_metrics": {
+          "type": "object",
+          "properties": {
+            "sync_efficiency": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Efficiency of coordination between machines"
+            },
+            "wait_time_percentage": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        }
+      }
+    },
+    "SafetyRequirements": {
+      "type": "object",
+      "properties": {
+        "minimum_separation_distances": {
+          "type": "object",
+          "properties": {
+            "operating_distance_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "turning_clearance_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "emergency_stop_distance_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "communication_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["RADIO", "VISUAL_SIGNALS", "AUTOMATED_SYSTEMS", "HAND_SIGNALS"]
+          }
+        },
+        "visibility_requirements": {
+          "type": "object",
+          "properties": {
+            "minimum_visibility_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "required_lighting": {
+              "type": "boolean"
+            },
+            "weather_limitations": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "training_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "emergency_procedures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scenario": {
+                "type": "string"
+              },
+              "procedure": {
+                "type": "string"
+              },
+              "responsible_party": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "FieldRequirements": {
+      "type": "object",
+      "properties": {
+        "minimum_field_size_hectares": {
+          "type": "number",
+          "minimum": 0
+        },
+        "maximum_slope_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "required_access_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "turning_space_requirements": {
+          "type": "object",
+          "properties": {
+            "headland_width_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "turning_radius_m": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "surface_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["level", "firm", "dry", "clear_of_obstacles"]
+          }
+        },
+        "proximity_requirements": {
+          "type": "object",
+          "properties": {
+            "max_distance_to_storage_km": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_distance_to_fuel_km": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_distance_to_workshop_km": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

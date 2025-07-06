@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://comi.schema/vendor.schema.json",
+  "title": "Vendor",
+  "description": "Equipment vendor/manufacturer information",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z_]+$",
+      "description": "Unique identifier for the vendor"
+    },
+    "name": {
+      "type": "string",
+      "description": "Vendor/manufacturer name"
+    },
+    "pub_key": {
+      "type": "string",
+      "description": "Public key for verification/authentication"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country of origin"
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Vendor website URL"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version"
+    }
+  },
+  "required": ["id", "name", "pub_key", "version"]
+}

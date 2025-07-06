@@ -1,0 +1,549 @@
+{
+  "name": "COMI",
+  "full_name": "Crop Operation Machine Index", 
+  "version": "1.0.0",
+  "description": "A formal, machine-usable schema that defines semantic relationships between crops, agricultural operations, and machine capabilities",
+  "schema_version": "1.0.0",
+  "created": "2025-01-06",
+  "last_updated": "2025-01-06",
+  "license": "MIT",
+  "repository": "https://github.com/your-org/comi",
+  "documentation": "https://comi.schema/docs",
+  "resources": {
+    "schemas": {
+      "base_url": "./schemas/",
+      "files": [
+        {
+          "name": "operation.schema.json",
+          "description": "JSON Schema for agricultural operations",
+          "entities": "Operation"
+        },
+        {
+          "name": "device.schema.json", 
+          "description": "JSON Schema for agricultural devices/machines",
+          "entities": "Device"
+        },
+        {
+          "name": "crop.schema.json",
+          "description": "JSON Schema for agricultural crops",
+          "entities": "Crop"
+        },
+        {
+          "name": "vendor.schema.json",
+          "description": "JSON Schema for equipment vendors",
+          "entities": "Vendor"
+        },
+        {
+          "name": "workflow.schema.json",
+          "description": "JSON Schema for operation workflows and sequencing",
+          "entities": "Workflow"
+        },
+        {
+          "name": "field_context.schema.json",
+          "description": "JSON Schema for field state management",
+          "entities": "FieldContext"
+        },
+        {
+          "name": "enhanced_crop.schema.json",
+          "description": "Enhanced JSON Schema for crops with growth stages",
+          "entities": "EnhancedCrop"
+        },
+        {
+          "name": "equipment_chain.schema.json",
+          "description": "JSON Schema for multi-machine operation chains",
+          "entities": "EquipmentChain"
+        },
+        {
+          "name": "enhanced_device.schema.json",
+          "description": "Enhanced JSON Schema for devices with Farming Simulator-style attachments",
+          "entities": "EnhancedDevice"
+        },
+        {
+          "name": "generic_planting_specification.schema.json",
+          "description": "Universal, flexible schema for any agricultural planting system",
+          "entities": "GenericPlantingSpecification"
+        }
+      ]
+    },
+    "data": {
+      "base_url": "./data/",
+      "operations": {
+        "base_url": "./data/operations/",
+        "files": [
+          {
+            "name": "tillage.json",
+            "description": "Tillage operations",
+            "count": 13,
+            "categories": ["primary_tillage", "secondary_tillage", "conservation_tillage", "no_till", "strip_tillage", "deep_tillage", "preparatory_tillage", "zone_tillage", "minimum_tillage", "shallow_tillage", "ridge_tillage", "chisel_plowing", "mulch_tillage"]
+          },
+          {
+            "name": "planting.json",
+            "description": "Planting and seeding operations", 
+            "count": 11,
+            "categories": ["direct_seeding", "precision_drilling", "broadcast_seeding", "transplanting", "precision_planting", "air_seeding", "band_seeding", "interseeding", "overseeding", "cover_crop_seeding", "companion_planting"]
+          },
+          {
+            "name": "protection.json",
+            "description": "Crop protection operations",
+            "count": 5,
+            "categories": ["herbicide_application", "insecticide_application", "fungicide_application", "foliar_application", "biological_control"]
+          },
+          {
+            "name": "harvest.json",
+            "description": "Harvest operations",
+            "count": 5,
+            "categories": ["combine_harvest", "forage_harvest", "root_harvest", "fruit_harvest", "hand_harvest"]
+          },
+          {
+            "name": "fertilization.json",
+            "description": "Fertilizer and nutrient operations",
+            "count": 8,
+            "categories": ["broadcast_application", "precision_application", "band_application", "injection_application", "foliar_application", "variable_rate_application", "lime_application", "organic_application"]
+          },
+          {
+            "name": "post_harvest.json",
+            "description": "Post-harvest processing operations",
+            "count": 9,
+            "categories": ["baling", "chopping", "windrowing", "raking", "tedding", "crimping", "threshing", "winnowing"]
+          },
+          {
+            "name": "cultivation.json",
+            "description": "Cultivation and mechanical weed control",
+            "count": 6,
+            "categories": ["inter_row_cultivation", "weed_control_cultivation", "mechanical_weeding", "flame_weeding", "rotary_hoeing", "sweep_cultivation"]
+          },
+          {
+            "name": "forestry.json",
+            "description": "Forest harvesting and timber processing",
+            "count": 5,
+            "categories": ["timber_harvest", "tree_processing", "log_transport", "wood_processing"]
+          },
+          {
+            "name": "livestock.json",
+            "description": "Livestock farming and feed management",
+            "count": 5,
+            "categories": ["feed_preparation", "feed_distribution", "milk_handling", "bedding_management", "manure_management"]
+          },
+          {
+            "name": "irrigation.json",
+            "description": "Water application and irrigation operations",
+            "count": 7,
+            "categories": ["sprinkler_irrigation", "drip_irrigation", "flood_irrigation", "furrow_irrigation", "center_pivot", "lateral_move", "precision_irrigation"]
+          },
+          {
+            "name": "maintenance.json",
+            "description": "Crop and field maintenance operations",
+            "count": 8,
+            "categories": ["pruning", "mowing", "trimming", "thinning", "staking", "mulching", "soil_sampling", "field_scouting"]
+          }
+        ],
+        "total_operations": 77
+      },
+      "devices": {
+        "base_url": "./data/devices/",
+        "files": [
+          {
+            "name": "tractors.json",
+            "description": "Tractor power units",
+            "count": 3,
+            "categories": ["independent"]
+          },
+          {
+            "name": "implements.json", 
+            "description": "Agricultural implements",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "harvesters.json",
+            "description": "Self-propelled harvest equipment",
+            "count": 4,
+            "categories": ["independent"]
+          },
+          {
+            "name": "tillage_equipment.json",
+            "description": "Tillage implements and soil preparation",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "planting_equipment.json",
+            "description": "Seeding, planting and transplanting equipment",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "forestry_equipment.json",
+            "description": "Forest harvesting and timber processing equipment",
+            "count": 4,
+            "categories": ["independent", "implement"]
+          },
+          {
+            "name": "loaders_material_handling.json",
+            "description": "Loaders and material handling equipment",
+            "count": 5,
+            "categories": ["independent", "implement"]
+          },
+          {
+            "name": "specialty_harvesters.json",
+            "description": "Specialized crop harvesting equipment",
+            "count": 6,
+            "categories": ["independent"]
+          },
+          {
+            "name": "advanced_application.json",
+            "description": "Advanced application equipment",
+            "count": 5,
+            "categories": ["implement"]
+          },
+          {
+            "name": "livestock_equipment.json",
+            "description": "Livestock farming and feed management equipment",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "enhanced_tractors.json",
+            "description": "Enhanced tractors with Farming Simulator-style attachment systems",
+            "count": 3,
+            "categories": ["independent"]
+          },
+          {
+            "name": "enhanced_implements.json",
+            "description": "Enhanced implements with detailed power and attachment requirements",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "front_loader_tools.json",
+            "description": "Front loader tools and attachments",
+            "count": 4,
+            "categories": ["implement"]
+          },
+          {
+            "name": "hay_forage_equipment.json",
+            "description": "Hay and forage production equipment",
+            "count": 12,
+            "categories": ["implement"]
+          },
+          {
+            "name": "irrigation_equipment.json",
+            "description": "Irrigation systems and water application equipment",
+            "count": 10,
+            "categories": ["independent", "implement"]
+          },
+          {
+            "name": "specialty_utility_vehicles.json",
+            "description": "Specialty and utility vehicles for agricultural operations",
+            "count": 13,
+            "categories": ["independent"]
+          }
+        ],
+        "total_devices": 93
+      },
+      "crops": {
+        "base_url": "./data/crops/",
+        "files": [
+          {
+            "name": "cereals.json",
+            "description": "Cereal and grain crops",
+            "count": 3,
+            "categories": ["cereals"]
+          },
+          {
+            "name": "legumes.json",
+            "description": "Legume and pulse crops", 
+            "count": 3,
+            "categories": ["legumes"]
+          },
+          {
+            "name": "vegetables.json",
+            "description": "Vegetable crops",
+            "count": 3,
+            "categories": ["vegetables"]
+          },
+          {
+            "name": "oilseeds.json",
+            "description": "Oilseed crops for oil production",
+            "count": 3,
+            "categories": ["oilseeds"]
+          },
+          {
+            "name": "fruits_orchards.json",
+            "description": "Tree fruits and orchard crops with detailed planting specifications",
+            "count": 4,
+            "categories": ["fruits"]
+          }
+        ],
+        "total_crops": 20
+      },
+      "vendors": {
+        "base_url": "./data/vendors/",
+        "files": [
+          {
+            "name": "vendors.json",
+            "description": "Equipment manufacturers and vendors",
+            "count": 14
+          }
+        ],
+        "total_vendors": 14
+      },
+      "workflows": {
+        "base_url": "./data/workflows/",
+        "files": [
+          {
+            "name": "grain_production.json",
+            "description": "Complete grain production workflow",
+            "workflow_type": "SEQUENTIAL"
+          },
+          {
+            "name": "vegetable_production.json",
+            "description": "Intensive vegetable production workflow",
+            "workflow_type": "SEQUENTIAL"
+          }
+        ],
+        "total_workflows": 2
+      },
+      "contexts": {
+        "base_url": "./data/contexts/",
+        "files": [
+          {
+            "name": "field_contexts.json",
+            "description": "Field state management and operational context",
+            "context_count": 2
+          }
+        ],
+        "total_contexts": 2
+      },
+      "equipment_chains": {
+        "base_url": "./data/equipment_chains/",
+        "files": [
+          {
+            "name": "harvest_chains.json",
+            "description": "Multi-machine harvest operation chains",
+            "chain_count": 2
+          }
+        ],
+        "total_chains": 2
+      },
+      "validation": {
+        "base_url": "./data/validation/",
+        "files": [
+          {
+            "name": "sequence_validator.json",
+            "description": "Operation sequence validation engine",
+            "rule_count": 9
+          }
+        ],
+        "total_validators": 1
+      }
+    },
+    "rules": {
+      "base_url": "./rules/",
+      "files": [
+        {
+          "name": "compatibility-rules.json",
+          "description": "Compatibility validation rules and logic",
+          "rule_count": 6
+        }
+      ]
+    },
+    "examples": {
+      "base_url": "./examples/",
+      "files": [
+        {
+          "name": "wheat-planting-example.json",
+          "description": "Wheat planting workflow example"
+        },
+        {
+          "name": "generic_planting_examples.json",
+          "description": "Examples demonstrating the generic planting specification system"
+        }
+      ]
+    }
+  },
+  "statistics": {
+    "total_operations": 77,
+    "total_devices": 93,
+    "total_enhanced_devices": 11,
+    "total_crops": 20,
+    "total_vendors": 14,
+    "total_workflows": 2,
+    "total_field_contexts": 2,
+    "total_equipment_chains": 2,
+    "total_validation_rules": 9,
+    "total_compatibility_rules": 6,
+    "total_attachment_points": 15,
+    "total_front_loader_tools": 4,
+    "total_hay_forage_equipment": 12,
+    "total_irrigation_equipment": 10,
+    "total_specialty_vehicles": 13,
+    "total_processing_equipment": 6
+  },
+  "usage": {
+    "quick_start": "Load comi.json to get the index, then load specific data files as needed",
+    "validation": "Use JSON Schema files to validate data structure and compatibility rules for logic validation",
+    "compatibility_checking": "Reference rules/compatibility-rules.json for validation logic implementation",
+    "workflow_planning": "Use workflows/ files to plan operation sequences and timing",
+    "field_management": "Use contexts/ files to track field states and operational history",
+    "multi_machine_operations": "Use equipment_chains/ files to coordinate complex multi-machine operations",
+    "sequence_validation": "Use validation/ files to validate operation sequences and timing constraints",
+    "enhanced_attachments": "Use enhanced_device.schema.json for Farming Simulator-style attachment compatibility",
+    "power_matching": "Use power_specifications and efficiency_curves for optimal equipment pairing",
+    "stability_analysis": "Use weight_specifications and stability_factors for safe operation planning",
+    "front_loader_systems": "Use front_loader_tools/ for material handling operations with upgrade mechanics"
+  },
+  "api_endpoints": {
+    "description": "Suggested API endpoints for consuming applications",
+    "endpoints": [
+      {
+        "path": "/operations",
+        "method": "GET",
+        "description": "List all available operations"
+      },
+      {
+        "path": "/operations/{category}",
+        "method": "GET", 
+        "description": "Get operations by category"
+      },
+      {
+        "path": "/devices",
+        "method": "GET",
+        "description": "List all available devices"
+      },
+      {
+        "path": "/devices/{category}",
+        "method": "GET",
+        "description": "Get devices by category"
+      },
+      {
+        "path": "/crops",
+        "method": "GET",
+        "description": "List all available crops"
+      },
+      {
+        "path": "/crops/{category}",
+        "method": "GET",
+        "description": "Get crops by category"
+      },
+      {
+        "path": "/compatibility/check",
+        "method": "POST",
+        "description": "Validate device-crop-operation compatibility",
+        "body": {
+          "devices": ["device_uuid1", "device_uuid2"],
+          "crop": "crop_id",
+          "operation": "operation_id",
+          "growth_stage": "stage_id",
+          "environmental_conditions": {}
+        }
+      },
+      {
+        "path": "/planning/suggest",
+        "method": "POST",
+        "description": "Suggest compatible device combinations",
+        "body": {
+          "crop": "crop_id",
+          "operation": "operation_id",
+          "constraints": {}
+        }
+      },
+      {
+        "path": "/workflows",
+        "method": "GET",
+        "description": "List available operation workflows"
+      },
+      {
+        "path": "/workflows/{workflow_id}/validate",
+        "method": "POST",
+        "description": "Validate workflow sequence and timing",
+        "body": {
+          "field_id": "field_id",
+          "planned_start_date": "date",
+          "environmental_conditions": {}
+        }
+      },
+      {
+        "path": "/fields/{field_id}/context",
+        "method": "GET",
+        "description": "Get current field state and context"
+      },
+      {
+        "path": "/fields/{field_id}/operations/plan",
+        "method": "POST",
+        "description": "Plan operations for a field",
+        "body": {
+          "workflow_id": "workflow_id",
+          "constraints": {},
+          "preferences": {}
+        }
+      },
+      {
+        "path": "/equipment_chains/{chain_id}/simulate",
+        "method": "POST",
+        "description": "Simulate multi-machine operation efficiency",
+        "body": {
+          "field_conditions": {},
+          "equipment_assignments": {},
+          "performance_targets": {}
+        }
+      },
+      {
+        "path": "/attachments/compatibility/check",
+        "method": "POST",
+        "description": "Check attachment compatibility between devices",
+        "body": {
+          "tractor_id": "device_uuid",
+          "implement_id": "device_uuid",
+          "attachment_point": "string",
+          "operation_type": "string"
+        }
+      },
+      {
+        "path": "/attachments/power/analyze",
+        "method": "POST",
+        "description": "Analyze power requirements and efficiency",
+        "body": {
+          "tractor_id": "device_uuid",
+          "implement_id": "device_uuid",
+          "field_conditions": {},
+          "target_speed": "number"
+        }
+      },
+      {
+        "path": "/attachments/stability/calculate",
+        "method": "POST",
+        "description": "Calculate stability factors and ballast requirements",
+        "body": {
+          "tractor_id": "device_uuid",
+          "implement_id": "device_uuid",
+          "load_conditions": {}
+        }
+      },
+      {
+        "path": "/front_loader/tools",
+        "method": "GET",
+        "description": "List available front loader tools and compatibility"
+      }
+    ]
+  },
+  "extensions": {
+    "custom_operations": "Add new operation definitions following operation.schema.json",
+    "custom_devices": "Add new device definitions following device.schema.json", 
+    "custom_crops": "Add new crop definitions following enhanced_crop.schema.json",
+    "custom_workflows": "Create custom workflows following workflow.schema.json",
+    "custom_equipment_chains": "Define custom multi-machine operations following equipment_chain.schema.json",
+    "enhanced_attachments": "Create enhanced devices following enhanced_device.schema.json with detailed attachment systems",
+    "front_loader_extensions": "Add custom front loader tools with upgrade mechanics and compatibility restrictions",
+    "power_curve_modeling": "Define custom power curves and efficiency mappings for specialized equipment",
+    "stability_analysis": "Implement custom stability calculations and ballast requirements",
+    "field_integration": "Integrate with field management systems using field_context.schema.json",
+    "validation_extension": "Extend validation rules using sequence_validator.json patterns",
+    "regional_variants": "Create regional data files with local crop varieties and equipment"
+  },
+  "contacts": {
+    "maintainer": "COMI Maintainers",
+    "email": "comi@agricultural-systems.org",
+    "issues": "https://github.com/your-org/comi/issues"
+  }
+}

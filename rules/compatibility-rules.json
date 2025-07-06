@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Compatibility rules for validating device-crop-operation combinations",
+  "rules": {
+    "width_compatibility": {
+      "rule_id": "WIDTH_COMPAT_001",
+      "description": "Device operating width must be compatible with crop access requirements",
+      "logic": "device.operating_width <= crop.min_access_width AND (IF operation.requires_precision THEN device.operating_width >= crop.min_row_width)",
+      "critical": true,
+      "validation_function": "validate_width_compatibility"
+    },
+    "growth_stage_compatibility": {
+      "rule_id": "GROWTH_STAGE_001",
+      "description": "Operation must be allowed in current crop growth stage",
+      "logic": "operation.id IN crop.growth_stages[current_stage].allowed_operations",
+      "critical": true,
+      "validation_function": "validate_growth_stage_compatibility"
+    },
+    "device_capability_compatibility": {
+      "rule_id": "DEVICE_CAP_001",
+      "description": "Device must be capable of performing the operation",
+      "logic": "operation.id IN (device.type.machine_maintype UNION device.type.auxiliary_types UNION all_attached_device_operations)",
+      "critical": true,
+      "validation_function": "validate_device_capability"
+    },
+    "power_compatibility": {
+      "rule_id": "POWER_COMPAT_001",
+      "description": "Power requirements must be met in device combinations",
+      "logic": "IF device.requires_power_source THEN upstream_device.power_output >= device.power_requirements.min_power_hp AND power_types_match",
+      "critical": true,
+      "validation_function": "validate_power_compatibility"
+    },
+    "attachment_compatibility": {
+      "rule_id": "ATTACH_COMPAT_001",
+      "description": "Devices must be mechanically compatible for attachment",
+      "logic": "compatibility_score >= minimum_threshold AND slot_requirements_met AND force_limits_respected",
+      "critical": true,
+      "validation_function": "validate_attachment_compatibility"
+    },
+    "environmental_compatibility": {
+      "rule_id": "ENV_COMPAT_001",
+      "description": "Environmental conditions must meet operation requirements",
+      "logic": "FOR EACH critical_condition: current_value WITHIN [min_value, max_value]",
+      "critical": true,
+      "validation_function": "validate_environmental_conditions"
+    }
+  },
+  "thresholds": {
+    "minimum_compatibility_score": 0.7,
+    "preferred_compatibility_score": 0.85,
+    "width_tolerance_meters": 0.1,
+    "power_safety_margin_percent": 10
+  },
+  "validation_priorities": [
+    "environmental_compatibility",
+    "growth_stage_compatibility", 
+    "device_capability_compatibility",
+    "width_compatibility",
+    "power_compatibility",
+    "attachment_compatibility"
+  ],
+  "error_codes": {
+    "WIDTH_TOO_LARGE": {
+      "code": "W001",
+      "message": "Device operating width exceeds crop minimum access width",
+      "severity": "error"
+    },
+    "WIDTH_TOO_SMALL": {
+      "code": "W002", 
+      "message": "Device operating width below minimum row width for precision operation",
+      "severity": "error"
+    },
+    "OPERATION_NOT_ALLOWED": {
+      "code": "G001",
+      "message": "Operation not allowed in current growth stage",
+      "severity": "error"
+    },
+    "DEVICE_INCAPABLE": {
+      "code": "D001",
+      "message": "Device not capable of performing operation",
+      "severity": "error"
+    },
+    "INSUFFICIENT_POWER": {
+      "code": "P001",
+      "message": "Insufficient power available for operation",
+      "severity": "error"
+    },
+    "POWER_TYPE_MISMATCH": {
+      "code": "P002",
+      "message": "Power type mismatch between devices",
+      "severity": "error"
+    },
+    "ATTACHMENT_INCOMPATIBLE": {
+      "code": "A001",
+      "message": "Devices cannot be mechanically attached",
+      "severity": "error"
+    },
+    "ENVIRONMENTAL_VIOLATION": {
+      "code": "E001",
+      "message": "Environmental conditions violate operation constraints",
+      "severity": "error"
+    },
+    "LOW_COMPATIBILITY_SCORE": {
+      "code": "C001",
+      "message": "Compatibility score below minimum threshold",
+      "severity": "warning"
+    }
+  },
+  "examples": {
+    "valid_combination": {
+      "description": "Tractor + Seeder on Wheat",
+      "devices": ["TRACTOR_JD_6140R_001", "SEEDER_AMZ_D930_001"],
+      "crop": "WHEAT_WINTER",
+      "operation": "PLANT_SEED",
+      "growth_stage": "PLANT",
+      "expected_result": "VALID"
+    },
+    "invalid_combination": {
+      "description": "Wide Sprayer in Orchard",
+      "devices": ["SPRAYER_SELF_PROP_001"],
+      "crop": "APPLE_ORCHARD",
+      "operation": "SPRAY_INSECTICIDE", 
+      "growth_stage": "BLOOM",
+      "expected_result": "INVALID",
+      "violated_rules": ["WIDTH_COMPAT_001"],
+      "error_codes": ["W001"]
+    }
+  },
+  "version": "1.0.0"
+}

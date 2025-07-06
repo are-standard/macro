@@ -1,0 +1,577 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COMI Enhanced Crop Schema",
+  "description": "Enhanced JSON Schema for agricultural crops with growth stages and seasonal calendars",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "type": "string",
+      "description": "Crop category classification"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the crop category"
+    },
+    "crops": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EnhancedCrop"
+      }
+    }
+  },
+  "required": ["schema_version", "category", "crops"],
+  "definitions": {
+    "EnhancedCrop": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique crop identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Common name of the crop"
+        },
+        "scientific_name": {
+          "type": "string",
+          "description": "Scientific name of the crop"
+        },
+        "category": {
+          "type": "string",
+          "description": "Primary crop category"
+        },
+        "sub_category": {
+          "type": "string",
+          "description": "Sub-category classification"
+        },
+        "is_perennial": {
+          "type": "boolean",
+          "description": "Whether the crop is perennial"
+        },
+        "min_row_width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Minimum row width in meters"
+        },
+        "min_access_width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Minimum access width for equipment in meters"
+        },
+        "growth_stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GrowthStage"
+          },
+          "description": "Defined growth stages for the crop"
+        },
+        "seasonal_calendar": {
+          "$ref": "#/definitions/SeasonalCalendar"
+        },
+        "varieties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CropVariety"
+          },
+          "description": "Available varieties of this crop"
+        },
+        "nutritional_requirements": {
+          "$ref": "#/definitions/NutritionalRequirements"
+        },
+        "pest_disease_profile": {
+          "$ref": "#/definitions/PestDiseaseProfile"
+        },
+        "market_information": {
+          "$ref": "#/definitions/MarketInformation"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "required": ["id", "name", "category", "is_perennial", "growth_stages", "version"]
+    },
+    "GrowthStage": {
+      "type": "object",
+      "properties": {
+        "stage_id": {
+          "type": "string",
+          "description": "Unique identifier for the growth stage"
+        },
+        "stage_name": {
+          "type": "string",
+          "description": "Human-readable name for the stage"
+        },
+        "stage_order": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sequential order of the stage"
+        },
+        "bbch_code": {
+          "type": "string",
+          "description": "BBCH (Biologische Bundesanstalt, Bundessortenamt und CHemische Industrie) growth stage code"
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Operations that can be performed during this stage"
+        },
+        "critical_operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Operations that must be performed during this stage"
+        },
+        "prohibited_operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Operations that should not be performed during this stage"
+        },
+        "duration_days": {
+          "type": "object",
+          "properties": {
+            "typical": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maximum": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": ["typical"]
+        },
+        "optimal_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OptimalCondition"
+          }
+        },
+        "growth_requirements": {
+          "type": "object",
+          "properties": {
+            "gdd_accumulation": {
+              "type": "number",
+              "description": "Growing degree days required for this stage"
+            },
+            "photoperiod_hours": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 24
+                },
+                "max": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 24
+                }
+              }
+            },
+            "vernalization_required": {
+              "type": "boolean"
+            }
+          }
+        },
+        "stage_indicators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Visual or measurable indicators of this stage"
+        }
+      },
+      "required": ["stage_id", "stage_name", "stage_order", "allowed_operations", "duration_days"]
+    },
+    "OptimalCondition": {
+      "type": "object",
+      "properties": {
+        "condition_type": {
+          "type": "string",
+          "enum": ["soil_moisture", "soil_temperature", "air_temperature", "precipitation", "humidity", "wind_speed", "solar_radiation", "soil_ph"]
+        },
+        "min_value": {
+          "type": "number"
+        },
+        "max_value": {
+          "type": "number"
+        },
+        "optimal_value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "critical": {
+          "type": "boolean",
+          "description": "Whether this condition is critical for success"
+        },
+        "tolerance": {
+          "type": "number",
+          "description": "Acceptable deviation from optimal"
+        }
+      },
+      "required": ["condition_type", "unit", "critical"]
+    },
+    "SeasonalCalendar": {
+      "type": "object",
+      "properties": {
+        "regions": {
+          "type": "object",
+          "patternProperties": {
+            "^[A-Z_]+$": {
+              "$ref": "#/definitions/RegionalCalendar"
+            }
+          }
+        },
+        "default_region": {
+          "type": "string"
+        }
+      }
+    },
+    "RegionalCalendar": {
+      "type": "object",
+      "properties": {
+        "region_name": {
+          "type": "string"
+        },
+        "climate_zone": {
+          "type": "string",
+          "enum": ["temperate", "tropical", "subtropical", "arid", "continental", "mediterranean"]
+        },
+        "planting_windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PlantingWindow"
+          }
+        },
+        "harvest_windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HarvestWindow"
+          }
+        },
+        "frost_dates": {
+          "type": "object",
+          "properties": {
+            "last_spring_frost": {
+              "type": "string",
+              "description": "Average last frost date in spring (MM-DD format)"
+            },
+            "first_fall_frost": {
+              "type": "string",
+              "description": "Average first frost date in fall (MM-DD format)"
+            }
+          }
+        },
+        "growing_season_length": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Typical growing season length in days"
+        }
+      },
+      "required": ["region_name", "climate_zone", "planting_windows", "harvest_windows"]
+    },
+    "PlantingWindow": {
+      "type": "object",
+      "properties": {
+        "window_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the planting window (e.g., 'Spring Planting', 'Fall Planting')"
+        },
+        "start_date": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$",
+          "description": "Start date in MM-DD format"
+        },
+        "end_date": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$",
+          "description": "End date in MM-DD format"
+        },
+        "optimal_start": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$",
+          "description": "Optimal start date in MM-DD format"
+        },
+        "optimal_end": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$",
+          "description": "Optimal end date in MM-DD format"
+        },
+        "soil_conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OptimalCondition"
+          }
+        },
+        "success_probability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Probability of successful crop establishment"
+        }
+      },
+      "required": ["window_id", "name", "start_date", "end_date"]
+    },
+    "HarvestWindow": {
+      "type": "object",
+      "properties": {
+        "window_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$"
+        },
+        "end_date": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$"
+        },
+        "peak_harvest": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$"
+        },
+        "maturity_indicators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quality_factors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["window_id", "name", "start_date", "end_date"]
+    },
+    "CropVariety": {
+      "type": "object",
+      "properties": {
+        "variety_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "breeder": {
+          "type": "string"
+        },
+        "maturity_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "yield_potential": {
+          "type": "object",
+          "properties": {
+            "typical": {
+              "type": "number",
+              "minimum": 0
+            },
+            "maximum": {
+              "type": "number",
+              "minimum": 0
+            },
+            "unit": {
+              "type": "string"
+            }
+          }
+        },
+        "traits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Special traits (disease resistance, herbicide tolerance, etc.)"
+        },
+        "adaptation_zones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["variety_id", "name", "maturity_days"]
+    },
+    "NutritionalRequirements": {
+      "type": "object",
+      "properties": {
+        "nitrogen_kg_ha": {
+          "type": "object",
+          "properties": {
+            "total": {
+              "type": "number",
+              "minimum": 0
+            },
+            "by_stage": {
+              "type": "object",
+              "patternProperties": {
+                "^[A-Z_]+$": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "phosphorus_kg_ha": {
+          "type": "number",
+          "minimum": 0
+        },
+        "potassium_kg_ha": {
+          "type": "number",
+          "minimum": 0
+        },
+        "micronutrients": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z_]+$": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "soil_ph_range": {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 14
+            },
+            "max": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 14
+            },
+            "optimal": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 14
+            }
+          }
+        }
+      }
+    },
+    "PestDiseaseProfile": {
+      "type": "object",
+      "properties": {
+        "major_pests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pest_name": {
+                "type": "string"
+              },
+              "vulnerable_stages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "control_operations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "economic_threshold": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "major_diseases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "disease_name": {
+                "type": "string"
+              },
+              "vulnerable_stages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "control_operations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "environmental_triggers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/OptimalCondition"
+                }
+              }
+            }
+          }
+        },
+        "weed_pressure": {
+          "type": "string",
+          "enum": ["low", "moderate", "high", "severe"]
+        }
+      }
+    },
+    "MarketInformation": {
+      "type": "object",
+      "properties": {
+        "market_class": {
+          "type": "string",
+          "description": "Market classification (food, feed, industrial, etc.)"
+        },
+        "quality_standards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "seasonal_price_patterns": {
+          "type": "object",
+          "properties": {
+            "harvest_price_ratio": {
+              "type": "number",
+              "description": "Ratio of harvest price to annual average"
+            },
+            "storage_economics": {
+              "type": "boolean",
+              "description": "Whether storage typically improves economics"
+            }
+          }
+        },
+        "export_markets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

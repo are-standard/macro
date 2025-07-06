@@ -1,0 +1,274 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Generic Planting Specification Schema",
+  "description": "Universal, flexible schema for any agricultural planting system",
+  "type": "object",
+  "definitions": {
+    "GenericPlantingSpecification": {
+      "type": "object",
+      "properties": {
+        "planting_system": {
+          "type": "object",
+          "description": "Overall planting system configuration",
+          "properties": {
+            "system_type": {
+              "type": "string",
+              "enum": ["field_crop", "orchard", "vineyard", "greenhouse", "aquaponics", "vertical_farm", "intercropping"],
+              "description": "High-level categorization of planting system"
+            },
+            "establishment_method": {
+              "type": "string",
+              "enum": ["direct_seeding", "transplanting", "grafting", "cutting", "division", "layering"],
+              "description": "How the crop is established"
+            },
+            "spatial_arrangement": {
+              "type": "string",
+              "enum": ["rows", "grid", "random", "cluster", "spiral", "hexagonal", "triangular"],
+              "description": "Spatial pattern of plant placement"
+            }
+          },
+          "required": ["system_type", "establishment_method", "spatial_arrangement"]
+        },
+        "dimensions": {
+          "type": "object",
+          "description": "Flexible dimensional specifications",
+          "properties": {
+            "primary_spacing": {
+              "type": "object",
+              "description": "Main spacing dimension (e.g., between rows, between trees)",
+              "properties": {
+                "value": {"type": "number", "minimum": 0},
+                "unit": {"type": "string", "default": "meters"},
+                "dimension_type": {"type": "string", "enum": ["row_spacing", "tree_spacing", "bed_width", "plot_spacing"]},
+                "variability": {
+                  "type": "object",
+                  "properties": {
+                    "min": {"type": "number"},
+                    "max": {"type": "number"},
+                    "alternatives": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {"type": "number"},
+                          "condition": {"type": "string"},
+                          "description": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["value", "dimension_type"]
+            },
+            "secondary_spacing": {
+              "type": "object",
+              "description": "Secondary spacing dimension (e.g., within row, between plants)",
+              "properties": {
+                "value": {"type": "number", "minimum": 0},
+                "unit": {"type": "string", "default": "meters"},
+                "dimension_type": {"type": "string", "enum": ["plant_spacing", "vine_spacing", "seed_spacing", "within_row"]},
+                "variability": {
+                  "type": "object",
+                  "properties": {
+                    "min": {"type": "number"},
+                    "max": {"type": "number"},
+                    "target_population": {"type": "number"},
+                    "population_unit": {"type": "string", "enum": ["plants_per_hectare", "seeds_per_m2", "trees_per_acre"]}
+                  }
+                }
+              },
+              "required": ["value", "dimension_type"]
+            },
+            "depth_specifications": {
+              "type": "object",
+              "properties": {
+                "planting_depth": {
+                  "type": "object",
+                  "properties": {
+                    "value": {"type": "number"},
+                    "unit": {"type": "string", "default": "meters"},
+                    "reference_point": {"type": "string", "enum": ["soil_surface", "seed_crown", "graft_union", "root_collar"]},
+                    "variability": {
+                      "type": "object",
+                      "properties": {
+                        "min": {"type": "number"},
+                        "max": {"type": "number"},
+                        "soil_dependent": {"type": "boolean"}
+                      }
+                    }
+                  },
+                  "required": ["value", "reference_point"]
+                }
+              }
+            }
+          },
+          "required": ["primary_spacing"]
+        },
+        "field_preparation": {
+          "type": "object",
+          "description": "Generic field/site preparation requirements",
+          "properties": {
+            "surface_configuration": {
+              "type": "string",
+              "enum": ["flat", "ridged", "raised_beds", "terraced", "mounded", "furrowed", "contoured"],
+              "description": "Required surface topology"
+            },
+            "surface_specifications": {
+              "type": "object",
+              "description": "Detailed surface configuration parameters",
+              "properties": {
+                "feature_height": {"type": "number", "description": "Height of ridges/beds/mounds"},
+                "feature_width": {"type": "number", "description": "Width of surface features"},
+                "spacing_between_features": {"type": "number", "description": "Distance between features"},
+                "slope_requirements": {
+                  "type": "object",
+                  "properties": {
+                    "min_slope": {"type": "number"},
+                    "max_slope": {"type": "number"},
+                    "preferred_slope": {"type": "number"},
+                    "slope_direction": {"type": "string"}
+                  }
+                }
+              }
+            },
+            "soil_preparation_level": {
+              "type": "string",
+              "enum": ["minimal", "moderate", "intensive", "precision"],
+              "description": "Level of soil preparation required"
+            }
+          }
+        },
+        "support_infrastructure": {
+          "type": "object",
+          "description": "Support systems and infrastructure needs",
+          "properties": {
+            "support_required": {"type": "boolean"},
+            "support_systems": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "support_type": {
+                    "type": "string",
+                    "enum": ["stakes", "trellis", "cage", "wire", "posts", "frames", "nets"]
+                  },
+                  "installation_timing": {
+                    "type": "string",
+                    "enum": ["pre_planting", "at_planting", "post_establishment", "seasonal"]
+                  },
+                  "dimensions": {
+                    "type": "object",
+                    "properties": {
+                      "height": {"type": "number"},
+                      "spacing": {"type": "number"},
+                      "wire_heights": {"type": "array", "items": {"type": "number"}}
+                    }
+                  },
+                  "materials": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "access_requirements": {
+          "type": "object",
+          "description": "Equipment and human access needs",
+          "properties": {
+            "machinery_access": {
+              "type": "object",
+              "properties": {
+                "required_width": {"type": "number", "description": "Minimum width for machinery"},
+                "turning_radius": {"type": "number", "description": "Required turning space"},
+                "weight_capacity": {"type": "number", "description": "Ground bearing capacity needed"},
+                "access_frequency": {"type": "string", "enum": ["continuous", "seasonal", "periodic", "harvest_only"]}
+              }
+            },
+            "human_access": {
+              "type": "object",
+              "properties": {
+                "pathway_width": {"type": "number"},
+                "working_space": {"type": "number"},
+                "harvest_access": {"type": "string", "enum": ["ground_level", "ladder", "platform", "mechanical"]}
+              }
+            }
+          }
+        },
+        "density_calculations": {
+          "type": "object",
+          "description": "Plant population and density metrics",
+          "properties": {
+            "target_population": {
+              "type": "object",
+              "properties": {
+                "value": {"type": "number"},
+                "unit": {"type": "string", "enum": ["plants_per_hectare", "plants_per_m2", "trees_per_hectare", "seeds_per_m2"]},
+                "efficiency_factor": {"type": "number", "description": "Expected germination/establishment rate"}
+              }
+            },
+            "seeding_rate": {
+              "type": "object",
+              "properties": {
+                "value": {"type": "number"},
+                "unit": {"type": "string", "enum": ["kg_per_hectare", "seeds_per_m2", "plants_per_m2", "tubers_per_hectare"]},
+                "adjustment_factors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "factor_type": {"type": "string"},
+                      "multiplier": {"type": "number"},
+                      "condition": {"type": "string"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "environmental_constraints": {
+          "type": "object",
+          "description": "Environmental factors affecting planting design",
+          "properties": {
+            "orientation_preferences": {
+              "type": "object",
+              "properties": {
+                "row_orientation": {"type": "string", "enum": ["north_south", "east_west", "slope_following", "wind_protection", "any"]},
+                "justification": {"type": "string"}
+              }
+            },
+            "microclimate_considerations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "factor": {"type": "string", "enum": ["wind_protection", "sun_exposure", "frost_protection", "drainage", "pollination"]},
+                  "requirement": {"type": "string"},
+                  "impact_on_spacing": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "regional_variations": {
+          "type": "array",
+          "description": "Location-specific modifications to base specifications",
+          "items": {
+            "type": "object",
+            "properties": {
+              "region_identifier": {"type": "string"},
+              "climate_zone": {"type": "string"},
+              "modification_type": {"type": "string", "enum": ["spacing_adjustment", "depth_adjustment", "timing_adjustment", "method_change"]},
+              "modification_details": {"type": "object"},
+              "justification": {"type": "string"}
+            }
+          }
+        }
+      },
+      "required": ["planting_system", "dimensions"]
+    }
+  }
+}

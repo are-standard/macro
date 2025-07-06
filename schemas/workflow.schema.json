@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COMI Operation Workflow Schema",
+  "description": "JSON Schema for defining agricultural operation workflows and sequencing",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "workflow_id": {
+      "type": "string",
+      "description": "Unique identifier for the workflow"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the workflow"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the workflow purpose"
+    },
+    "applicable_crops": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of crop IDs this workflow applies to"
+    },
+    "workflow_type": {
+      "type": "string",
+      "enum": ["SEQUENTIAL", "PARALLEL", "CONDITIONAL", "CYCLIC"],
+      "description": "Type of workflow execution pattern"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/WorkflowStep"
+      },
+      "description": "Ordered list of workflow steps"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Prerequisite"
+      },
+      "description": "Conditions that must be met before workflow can start"
+    },
+    "validation_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ValidationRule"
+      },
+      "description": "Rules to validate workflow execution"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    }
+  },
+  "required": ["schema_version", "workflow_id", "name", "workflow_type", "steps", "version"],
+  "definitions": {
+    "WorkflowStep": {
+      "type": "object",
+      "properties": {
+        "step_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of operation IDs that can be performed in this step"
+        },
+        "required_previous_steps": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "description": "Step IDs that must be completed before this step"
+        },
+        "alternatives": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether operations in this step are alternatives to each other"
+        },
+        "optional": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this step is optional in the workflow"
+        },
+        "timing_constraints": {
+          "$ref": "#/definitions/TimingConstraints"
+        },
+        "field_state_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Required field states for this step"
+        },
+        "field_state_changes": {
+          "type": "object",
+          "properties": {
+            "sets_state": {
+              "type": "string",
+              "description": "Field state that this step sets"
+            },
+            "adds_properties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Field properties that this step adds"
+            }
+          }
+        }
+      },
+      "required": ["step_id", "name", "operations"]
+    },
+    "TimingConstraints": {
+      "type": "object",
+      "properties": {
+        "earliest_start": {
+          "type": "string",
+          "description": "Earliest time this step can start (ISO date or season)"
+        },
+        "latest_start": {
+          "type": "string",
+          "description": "Latest time this step can start (ISO date or season)"
+        },
+        "duration_max_days": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum days this step should take"
+        },
+        "growth_stage_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Required crop growth stages for this step"
+        },
+        "seasonal_restrictions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["spring", "summer", "fall", "winter"]
+          }
+        }
+      }
+    },
+    "Prerequisite": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["FIELD_STATE", "CROP_STAGE", "WEATHER", "EQUIPMENT", "TIMING"]
+        },
+        "condition": {
+          "type": "string",
+          "description": "Specific condition that must be met"
+        },
+        "required_value": {
+          "type": ["string", "number", "boolean"],
+          "description": "Required value for the condition"
+        }
+      },
+      "required": ["type", "condition"]
+    },
+    "ValidationRule": {
+      "type": "object",
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "rule_type": {
+          "type": "string",
+          "enum": ["SEQUENCE", "TIMING", "COMPATIBILITY", "RESOURCE"]
+        },
+        "condition": {
+          "type": "string",
+          "description": "Condition to validate"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message if validation fails"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["ERROR", "WARNING", "INFO"],
+          "default": "ERROR"
+        }
+      },
+      "required": ["rule_id", "rule_type", "condition"]
+    }
+  }
+}

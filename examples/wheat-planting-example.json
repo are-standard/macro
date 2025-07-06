@@ -1,0 +1,143 @@
+{
+  "example_name": "Wheat Planting with Tractor and Seeder",
+  "description": "Complete example showing device combination for wheat planting operation",
+  "scenario": {
+    "operation": "PLANT_SEED",
+    "crop": "WHEAT_WINTER",
+    "growth_stage": "PLANT",
+    "devices": [
+      {
+        "device_uuid": "TRACTOR_JD_6140R_001",
+        "role": "power_source",
+        "attachment_point": null
+      },
+      {
+        "device_uuid": "SEEDER_AMZ_D930_001", 
+        "role": "implement",
+        "attachment_point": "rear_3pt"
+      }
+    ],
+    "environmental_conditions": {
+      "soil_moisture": 20.0,
+      "soil_temperature": 12.0,
+      "air_temperature": 18.0,
+      "wind_speed": 8.0,
+      "precipitation": 0.0
+    }
+  },
+  "validation_results": {
+    "overall_result": "VALID",
+    "compatibility_score": 0.95,
+    "rule_validations": [
+      {
+        "rule_id": "WIDTH_COMPAT_001",
+        "result": "PASS",
+        "details": "Seeder width (3.0m) <= Wheat min_access_width (3.0m) and >= min_row_width (0.15m)"
+      },
+      {
+        "rule_id": "GROWTH_STAGE_001", 
+        "result": "PASS",
+        "details": "PLANT_SEED operation allowed in PLANT growth stage"
+      },
+      {
+        "rule_id": "DEVICE_CAP_001",
+        "result": "PASS",
+        "details": "Tractor can transport, Seeder can perform PLANT_SEED operation"
+      },
+      {
+        "rule_id": "POWER_COMPAT_001",
+        "result": "PASS", 
+        "details": "Tractor provides 140hp PTO, Seeder requires 90-150hp PTO"
+      },
+      {
+        "rule_id": "ATTACH_COMPAT_001",
+        "result": "PASS",
+        "details": "Compatibility score 0.95 >= threshold 0.7, 3-point hitch compatible"
+      },
+      {
+        "rule_id": "ENV_COMPAT_001",
+        "result": "PASS",
+        "details": "All environmental conditions within acceptable ranges"
+      }
+    ],
+    "warnings": [],
+    "errors": []
+  },
+  "operation_sequence": [
+    {
+      "step": 1,
+      "action": "Attach seeder to tractor rear 3-point hitch",
+      "duration_minutes": 15,
+      "requirements": ["manual_operation"]
+    },
+    {
+      "step": 2,
+      "action": "Configure seeder for wheat seed type and planting depth",
+      "duration_minutes": 10,
+      "requirements": ["operator_knowledge"]
+    },
+    {
+      "step": 3,
+      "action": "Load seed and fertilizer into seeder",
+      "duration_minutes": 20,
+      "requirements": ["seed_supply", "fertilizer_supply"]
+    },
+    {
+      "step": 4,
+      "action": "Perform planting operation",
+      "duration_minutes": 240,
+      "requirements": ["environmental_conditions_met", "field_prepared"]
+    },
+    {
+      "step": 5,
+      "action": "Clean and store equipment",
+      "duration_minutes": 30,
+      "requirements": ["cleaning_facilities"]
+    }
+  ],
+  "expected_outcomes": {
+    "field_coverage": "100%",
+    "seed_placement_accuracy": "±2cm depth, ±1cm spacing",
+    "estimated_yield_impact": "+15% vs broadcast seeding",
+    "fuel_consumption": "12L/hectare",
+    "work_rate": "8 hectares/hour"
+  },
+  "alternative_combinations": [
+    {
+      "description": "Kubota tractor with same seeder",
+      "devices": ["TRACTOR_KUBOTA_M7_001", "SEEDER_AMZ_D930_001"],
+      "compatibility_score": 0.82,
+      "notes": "Lower compatibility due to lack of control integration"
+    },
+    {
+      "description": "No-till approach",
+      "devices": ["TRACTOR_JD_6140R_001", "DRILL_NO_TILL_001"],
+      "compatibility_score": 0.88,
+      "notes": "Requires different tillage preparation"
+    }
+  ],
+  "cost_analysis": {
+    "equipment_cost_per_hour": {
+      "tractor": 45.00,
+      "seeder": 25.00,
+      "total": 70.00
+    },
+    "operational_cost_per_hectare": {
+      "fuel": 18.00,
+      "labor": 15.00,
+      "maintenance": 8.00,
+      "total": 41.00
+    },
+    "seed_and_inputs_per_hectare": {
+      "seed": 85.00,
+      "fertilizer": 45.00,
+      "total": 130.00
+    }
+  },
+  "metadata": {
+    "created_by": "COMI Example Generator",
+    "created_date": "2025-01-06",
+    "version": "1.0.0",
+    "last_validated": "2025-01-06"
+  }
+}

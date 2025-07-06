@@ -1,0 +1,451 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COMI Field Context Schema",
+  "description": "JSON Schema for field state management and operational context",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "field_id": {
+      "type": "string",
+      "description": "Unique identifier for the field"
+    },
+    "field_name": {
+      "type": "string",
+      "description": "Human-readable name for the field"
+    },
+    "location": {
+      "$ref": "#/definitions/Location"
+    },
+    "area": {
+      "type": "object",
+      "properties": {
+        "total_hectares": {
+          "type": "number",
+          "minimum": 0
+        },
+        "workable_hectares": {
+          "type": "number",
+          "minimum": 0
+        },
+        "zones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FieldZone"
+          }
+        }
+      },
+      "required": ["total_hectares", "workable_hectares"]
+    },
+    "current_state": {
+      "$ref": "#/definitions/FieldState"
+    },
+    "state_history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/StateHistoryEntry"
+      },
+      "description": "Historical record of field state changes"
+    },
+    "active_crop": {
+      "$ref": "#/definitions/ActiveCrop"
+    },
+    "environmental_status": {
+      "$ref": "#/definitions/EnvironmentalStatus"
+    },
+    "planned_operations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/PlannedOperation"
+      },
+      "description": "Scheduled future operations"
+    },
+    "constraints": {
+      "$ref": "#/definitions/FieldConstraints"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    }
+  },
+  "required": ["schema_version", "field_id", "field_name", "area", "current_state", "version"],
+  "definitions": {
+    "Location": {
+      "type": "object",
+      "properties": {
+        "coordinates": {
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "longitude": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            }
+          },
+          "required": ["latitude", "longitude"]
+        },
+        "region": {
+          "type": "string",
+          "description": "Agricultural region or zone"
+        },
+        "elevation_m": {
+          "type": "number",
+          "description": "Elevation in meters"
+        }
+      }
+    },
+    "FieldZone": {
+      "type": "object",
+      "properties": {
+        "zone_id": {
+          "type": "string"
+        },
+        "zone_name": {
+          "type": "string"
+        },
+        "hectares": {
+          "type": "number",
+          "minimum": 0
+        },
+        "soil_type": {
+          "type": "string"
+        },
+        "drainage_class": {
+          "type": "string",
+          "enum": ["well_drained", "moderately_drained", "poorly_drained", "very_poorly_drained"]
+        },
+        "slope_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "management_zone": {
+          "type": "string",
+          "enum": ["high_productivity", "medium_productivity", "low_productivity", "variable"]
+        }
+      },
+      "required": ["zone_id", "zone_name", "hectares", "soil_type"]
+    },
+    "FieldState": {
+      "type": "object",
+      "properties": {
+        "primary_state": {
+          "type": "string",
+          "enum": ["FALLOW", "PLOWED", "CULTIVATED", "BEDS_FORMED", "PLANTED", "HARVESTED", "CLEANED"]
+        },
+        "state_properties": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["LIMED", "FERTILIZED_STARTER", "FERTILIZED_MIDSEASON", "FERTILIZED_PREPLANT", "FERTILIZED_SIDEDRESS", "WEED_CONTROLLED", "PROTECTED", "MULCHED", "IRRIGATED", "RESIDUE_MANAGED", "TESTED", "AMENDED", "CULTIVATED_EARLY"]
+          }
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_by": {
+          "type": "string",
+          "description": "Operation or system that updated the state"
+        }
+      },
+      "required": ["primary_state", "state_properties", "last_updated"]
+    },
+    "StateHistoryEntry": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "operation_id": {
+          "type": "string"
+        },
+        "operation_name": {
+          "type": "string"
+        },
+        "equipment_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "operator": {
+          "type": "string"
+        },
+        "area_worked_hectares": {
+          "type": "number",
+          "minimum": 0
+        },
+        "previous_state": {
+          "type": "string"
+        },
+        "new_state": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "object",
+          "properties": {
+            "weather": {
+              "type": "string"
+            },
+            "soil_moisture": {
+              "type": "number"
+            },
+            "temperature": {
+              "type": "number"
+            }
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "required": ["timestamp", "operation_id", "operation_name", "previous_state", "new_state"]
+    },
+    "ActiveCrop": {
+      "type": "object",
+      "properties": {
+        "crop_id": {
+          "type": "string"
+        },
+        "crop_name": {
+          "type": "string"
+        },
+        "variety": {
+          "type": "string"
+        },
+        "planting_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "expected_harvest_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "current_growth_stage": {
+          "type": "string"
+        },
+        "days_since_planting": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "estimated_yield": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "unit": {
+              "type": "string"
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      },
+      "required": ["crop_id", "crop_name", "current_growth_stage"]
+    },
+    "EnvironmentalStatus": {
+      "type": "object",
+      "properties": {
+        "soil_conditions": {
+          "type": "object",
+          "properties": {
+            "moisture_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "temperature_c": {
+              "type": "number"
+            },
+            "ph": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 14
+            },
+            "organic_matter_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "compaction_level": {
+              "type": "string",
+              "enum": ["low", "moderate", "high", "severe"]
+            }
+          }
+        },
+        "weather_conditions": {
+          "type": "object",
+          "properties": {
+            "current_temperature_c": {
+              "type": "number"
+            },
+            "humidity_percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "wind_speed_kmh": {
+              "type": "number",
+              "minimum": 0
+            },
+            "precipitation_last_24h_mm": {
+              "type": "number",
+              "minimum": 0
+            },
+            "precipitation_last_7d_mm": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "field_accessibility": {
+          "type": "object",
+          "properties": {
+            "accessible": {
+              "type": "boolean"
+            },
+            "access_limitations": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["too_wet", "too_dry", "frozen", "flooded", "snow_covered", "equipment_limitations"]
+              }
+            },
+            "estimated_workable_date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "PlannedOperation": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "type": "string"
+        },
+        "operation_name": {
+          "type": "string"
+        },
+        "planned_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"]
+        },
+        "workflow_step": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "required_equipment": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assigned_operator": {
+          "type": "string"
+        },
+        "estimated_duration_hours": {
+          "type": "number",
+          "minimum": 0
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Operations that must be completed first"
+        }
+      },
+      "required": ["operation_id", "operation_name", "planned_date", "priority"]
+    },
+    "FieldConstraints": {
+      "type": "object",
+      "properties": {
+        "access_restrictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "equipment_limitations": {
+          "type": "object",
+          "properties": {
+            "max_weight_kg": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_width_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "prohibited_equipment": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "environmental_limitations": {
+          "type": "object",
+          "properties": {
+            "sensitive_area": {
+              "type": "boolean"
+            },
+            "buffer_zones": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["waterway", "residential", "organic", "wildlife"]
+                  },
+                  "distance_m": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "restrictions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "regulatory_requirements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

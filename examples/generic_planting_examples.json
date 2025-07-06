@@ -1,0 +1,400 @@
+{
+  "schema_version": "1.0.0",
+  "description": "Examples demonstrating the generic planting specification system",
+  "examples": [
+    {
+      "crop_type": "cereal_grain",
+      "example_name": "Wheat - Broadcast vs Drilled",
+      "planting_specification": {
+        "planting_system": {
+          "system_type": "field_crop",
+          "establishment_method": "direct_seeding",
+          "spatial_arrangement": "rows"
+        },
+        "dimensions": {
+          "primary_spacing": {
+            "value": 0.18,
+            "unit": "meters",
+            "dimension_type": "row_spacing",
+            "variability": {
+              "min": 0.15,
+              "max": 0.25,
+              "alternatives": [
+                {
+                  "value": 0.0,
+                  "condition": "broadcast_seeding",
+                  "description": "No rows in broadcast system"
+                },
+                {
+                  "value": 0.15,
+                  "condition": "narrow_row_drilling",
+                  "description": "Narrow rows for increased yield potential"
+                }
+              ]
+            }
+          },
+          "depth_specifications": {
+            "planting_depth": {
+              "value": 0.025,
+              "unit": "meters",
+              "reference_point": "soil_surface",
+              "variability": {
+                "min": 0.015,
+                "max": 0.040,
+                "soil_dependent": true
+              }
+            }
+          }
+        },
+        "field_preparation": {
+          "surface_configuration": "flat",
+          "soil_preparation_level": "moderate"
+        },
+        "access_requirements": {
+          "machinery_access": {
+            "required_width": 3.0,
+            "access_frequency": "seasonal"
+          }
+        },
+        "density_calculations": {
+          "target_population": {
+            "value": 280,
+            "unit": "plants_per_m2",
+            "efficiency_factor": 0.85
+          },
+          "seeding_rate": {
+            "value": 135,
+            "unit": "kg_per_hectare"
+          }
+        }
+      }
+    },
+    {
+      "crop_type": "row_crop",
+      "example_name": "Corn - Variable Row Systems",
+      "planting_specification": {
+        "planting_system": {
+          "system_type": "field_crop",
+          "establishment_method": "direct_seeding",
+          "spatial_arrangement": "rows"
+        },
+        "dimensions": {
+          "primary_spacing": {
+            "value": 0.76,
+            "unit": "meters",
+            "dimension_type": "row_spacing",
+            "variability": {
+              "alternatives": [
+                {
+                  "value": 0.56,
+                  "condition": "narrow_rows",
+                  "description": "Narrow rows for higher population"
+                },
+                {
+                  "value": 0.38,
+                  "condition": "twin_rows",
+                  "description": "Twin row system on 76cm centers"
+                }
+              ]
+            }
+          },
+          "secondary_spacing": {
+            "value": 0.15,
+            "unit": "meters",
+            "dimension_type": "plant_spacing",
+            "variability": {
+              "target_population": 79000,
+              "population_unit": "plants_per_hectare"
+            }
+          },
+          "depth_specifications": {
+            "planting_depth": {
+              "value": 0.05,
+              "unit": "meters",
+              "reference_point": "soil_surface",
+              "variability": {
+                "min": 0.03,
+                "max": 0.08,
+                "soil_dependent": true
+              }
+            }
+          }
+        },
+        "field_preparation": {
+          "surface_configuration": "flat",
+          "surface_specifications": {
+            "slope_requirements": {
+              "max_slope": 8.0,
+              "preferred_slope": 2.0
+            }
+          },
+          "soil_preparation_level": "precision"
+        },
+        "access_requirements": {
+          "machinery_access": {
+            "required_width": 4.0,
+            "access_frequency": "periodic"
+          }
+        }
+      }
+    },
+    {
+      "crop_type": "ridge_crop",
+      "example_name": "Potato - Ridge System",
+      "planting_specification": {
+        "planting_system": {
+          "system_type": "field_crop",
+          "establishment_method": "direct_seeding",
+          "spatial_arrangement": "rows"
+        },
+        "dimensions": {
+          "primary_spacing": {
+            "value": 0.75,
+            "unit": "meters",
+            "dimension_type": "row_spacing",
+            "variability": {
+              "alternatives": [
+                {
+                  "value": 0.90,
+                  "condition": "wide_equipment",
+                  "description": "Wider rows for larger equipment"
+                },
+                {
+                  "value": 0.60,
+                  "condition": "raised_beds",
+                  "description": "Closer rows in raised bed system"
+                }
+              ]
+            }
+          },
+          "secondary_spacing": {
+            "value": 0.33,
+            "unit": "meters",
+            "dimension_type": "plant_spacing"
+          },
+          "depth_specifications": {
+            "planting_depth": {
+              "value": 0.10,
+              "unit": "meters",
+              "reference_point": "ridge_surface",
+              "variability": {
+                "min": 0.08,
+                "max": 0.15
+              }
+            }
+          }
+        },
+        "field_preparation": {
+          "surface_configuration": "ridged",
+          "surface_specifications": {
+            "feature_height": 0.20,
+            "feature_width": 0.40,
+            "spacing_between_features": 0.75
+          },
+          "soil_preparation_level": "intensive"
+        },
+        "access_requirements": {
+          "machinery_access": {
+            "required_width": 3.5,
+            "access_frequency": "periodic"
+          }
+        },
+        "density_calculations": {
+          "target_population": {
+            "value": 40400,
+            "unit": "plants_per_hectare"
+          },
+          "seeding_rate": {
+            "value": 2500,
+            "unit": "kg_per_hectare"
+          }
+        }
+      }
+    },
+    {
+      "crop_type": "orchard",
+      "example_name": "Apple - Scalable Density System",
+      "planting_specification": {
+        "planting_system": {
+          "system_type": "orchard",
+          "establishment_method": "transplanting",
+          "spatial_arrangement": "grid"
+        },
+        "dimensions": {
+          "primary_spacing": {
+            "value": 6.0,
+            "unit": "meters",
+            "dimension_type": "row_spacing",
+            "variability": {
+              "alternatives": [
+                {
+                  "value": 3.5,
+                  "condition": "high_density",
+                  "description": "High density orchard system"
+                },
+                {
+                  "value": 8.0,
+                  "condition": "standard_large",
+                  "description": "Large standard trees"
+                }
+              ]
+            }
+          },
+          "secondary_spacing": {
+            "value": 6.0,
+            "unit": "meters",
+            "dimension_type": "tree_spacing",
+            "variability": {
+              "alternatives": [
+                {
+                  "value": 1.5,
+                  "condition": "high_density",
+                  "description": "Dwarf trees in high density"
+                },
+                {
+                  "value": 8.0,
+                  "condition": "standard_large",
+                  "description": "Large standard trees"
+                }
+              ]
+            }
+          },
+          "depth_specifications": {
+            "planting_depth": {
+              "value": 0.60,
+              "unit": "meters",
+              "reference_point": "graft_union",
+              "variability": {
+                "min": 0.50,
+                "max": 0.80
+              }
+            }
+          }
+        },
+        "field_preparation": {
+          "surface_configuration": "flat",
+          "soil_preparation_level": "intensive"
+        },
+        "support_infrastructure": {
+          "support_required": true,
+          "support_systems": [
+            {
+              "support_type": "stakes",
+              "installation_timing": "at_planting",
+              "dimensions": {
+                "height": 2.5
+              },
+              "materials": ["wooden_posts", "metal_stakes"]
+            },
+            {
+              "support_type": "trellis",
+              "installation_timing": "post_establishment",
+              "dimensions": {
+                "height": 2.2,
+                "spacing": 6.0,
+                "wire_heights": [0.8, 1.6, 2.2]
+              },
+              "materials": ["galvanized_wire", "steel_posts"]
+            }
+          ]
+        },
+        "access_requirements": {
+          "machinery_access": {
+            "required_width": 6.0,
+            "turning_radius": 12.0,
+            "access_frequency": "continuous"
+          },
+          "human_access": {
+            "pathway_width": 1.0,
+            "harvest_access": "ladder"
+          }
+        },
+        "environmental_constraints": {
+          "orientation_preferences": {
+            "row_orientation": "north_south",
+            "justification": "Even light distribution for fruit quality"
+          }
+        },
+        "density_calculations": {
+          "target_population": {
+            "value": 278,
+            "unit": "trees_per_hectare"
+          }
+        }
+      }
+    },
+    {
+      "crop_type": "vineyard",
+      "example_name": "Grapes - Trellis System",
+      "planting_specification": {
+        "planting_system": {
+          "system_type": "vineyard",
+          "establishment_method": "transplanting",
+          "spatial_arrangement": "rows"
+        },
+        "dimensions": {
+          "primary_spacing": {
+            "value": 3.0,
+            "unit": "meters",
+            "dimension_type": "row_spacing",
+            "variability": {
+              "min": 2.5,
+              "max": 4.0
+            }
+          },
+          "secondary_spacing": {
+            "value": 1.5,
+            "unit": "meters",
+            "dimension_type": "vine_spacing",
+            "variability": {
+              "min": 1.0,
+              "max": 2.5
+            }
+          }
+        },
+        "field_preparation": {
+          "surface_configuration": "flat",
+          "surface_specifications": {
+            "slope_requirements": {
+              "max_slope": 15.0,
+              "preferred_slope": 5.0,
+              "slope_direction": "south_facing"
+            }
+          }
+        },
+        "support_infrastructure": {
+          "support_required": true,
+          "support_systems": [
+            {
+              "support_type": "trellis",
+              "installation_timing": "pre_planting",
+              "dimensions": {
+                "height": 2.0,
+                "spacing": 6.0,
+                "wire_heights": [0.8, 1.1, 1.4, 1.7]
+              }
+            }
+          ]
+        },
+        "environmental_constraints": {
+          "orientation_preferences": {
+            "row_orientation": "north_south",
+            "justification": "Optimal sun exposure for grape development"
+          },
+          "microclimate_considerations": [
+            {
+              "factor": "wind_protection",
+              "requirement": "moderate_air_movement",
+              "impact_on_spacing": "wider_rows_in_windy_areas"
+            },
+            {
+              "factor": "drainage",
+              "requirement": "excellent_drainage",
+              "impact_on_spacing": "slope_following_orientation"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

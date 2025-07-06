@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://comi.schema/device.schema.json",
+  "title": "Device",
+  "description": "Agricultural device/machine definition",
+  "type": "object",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "description": "Unique identifier for the device"
+    },
+    "vendor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pub_key": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "name", "pub_key"]
+    },
+    "type": {
+      "type": "object",
+      "properties": {
+        "machine_maintype": {
+          "type": "string",
+          "description": "Reference to primary operation ID"
+        },
+        "auxiliary_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of secondary operation IDs"
+        },
+        "machine_key": {
+          "type": ["string", "null"],
+          "description": "Machine-specific key"
+        },
+        "machine_serial": {
+          "type": "string",
+          "description": "Serial number"
+        },
+        "machine_model": {
+          "type": "string",
+          "description": "Model designation"
+        }
+      },
+      "required": ["machine_maintype", "auxiliary_types", "machine_serial", "machine_model"]
+    },
+    "device_category": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["independent", "implement", "hybrid"]
+        },
+        "can_operate_alone": {
+          "type": "boolean"
+        },
+        "requires_power_source": {
+          "type": "boolean"
+        },
+        "can_provide_power": {
+          "type": "boolean"
+        }
+      },
+      "required": ["category", "can_operate_alone", "requires_power_source", "can_provide_power"]
+    },
+    "operating_width": {
+      "type": "number",
+      "description": "Working width in meters"
+    },
+    "implement_slots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/implement_slot"
+      }
+    },
+    "capability_index": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Certification number indicating device intelligence/automation level"
+    },
+    "power_output": {
+      "type": "number",
+      "description": "Available power for other devices (e.g., PTO hp)"
+    },
+    "power_requirements": {
+      "anyOf": [
+        {"$ref": "#/definitions/power_requirement"},
+        {"type": "null"}
+      ]
+    },
+    "weight": {
+      "type": "number",
+      "description": "Total weight in kg"
+    },
+    "ground_pressure": {
+      "type": "number",
+      "description": "Pressure per unit area"
+    },
+    "attachment_compatibility": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/device_compatibility"
+      }
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version"
+    }
+  },
+  "required": ["uuid", "vendor", "type", "device_category", "operating_width", "capability_index", "power_output", "weight", "ground_pressure", "version"],
+  "definitions": {
+    "implement_slot": {
+      "type": "object",
+      "properties": {
+        "slot_id": {
+          "type": "string"
+        },
+        "slot_type": {
+          "type": "string",
+          "enum": ["3-point", "drawbar", "front-mount", "hydraulic", "PTO"]
+        },
+        "max_implement_width": {
+          "type": "number"
+        },
+        "power_available": {
+          "type": "number"
+        },
+        "attachment_force": {
+          "type": "number"
+        }
+      },
+      "required": ["slot_id", "slot_type", "max_implement_width", "power_available", "attachment_force"]
+    },
+    "power_requirement": {
+      "type": "object",
+      "properties": {
+        "min_power_hp": {
+          "type": "number"
+        },
+        "max_power_hp": {
+          "type": "number"
+        },
+        "power_type": {
+          "type": "string",
+          "enum": ["PTO", "hydraulic", "electric", "manual"]
+        }
+      },
+      "required": ["min_power_hp", "max_power_hp", "power_type"]
+    },
+    "device_compatibility": {
+      "type": "object",
+      "properties": {
+        "compatible_device_uuid": {
+          "type": "string"
+        },
+        "attachment_type": {
+          "type": "string"
+        },
+        "power_transfer": {
+          "type": "boolean"
+        },
+        "control_integration": {
+          "type": "boolean"
+        },
+        "compatibility_score": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      },
+      "required": ["compatible_device_uuid", "attachment_type", "power_transfer", "control_integration", "compatibility_score"]
+    }
+  }
+}
