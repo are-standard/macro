@@ -1,14 +1,14 @@
 {
-  "name": "COMI",
-  "full_name": "Crop Operation Machine Index", 
+  "name": "MACRO",
+  "full_name": "Machine Crop Operation Index",
   "version": "1.0.0",
-  "description": "A formal, machine-usable schema that defines semantic relationships between crops, agricultural operations, and machine capabilities",
+  "description": "A formal, machine-usable schema that defines semantic relationships between agricultural machines, crops, and operations",
   "schema_version": "1.0.0",
   "created": "2025-01-06",
-  "last_updated": "2025-01-06",
+  "last_updated": "2025-01-16",
   "license": "MIT",
-  "repository": "https://github.com/your-org/comi",
-  "documentation": "https://comi.schema/docs",
+  "repository": "https://github.com/your-org/macro",
+  "documentation": "https://macro.schema/docs",
   "resources": {
     "schemas": {
       "base_url": "./schemas/",
@@ -381,7 +381,7 @@
     "total_processing_equipment": 6
   },
   "usage": {
-    "quick_start": "Load comi.json to get the index, then load specific data files as needed",
+    "quick_start": "Load macro.json to get the index, then load specific data files as needed",
     "validation": "Use JSON Schema files to validate data structure and compatibility rules for logic validation",
     "compatibility_checking": "Reference rules/compatibility-rules.json for validation logic implementation",
     "workflow_planning": "Use workflows/ files to plan operation sequences and timing",
@@ -542,8 +542,8 @@
     "regional_variants": "Create regional data files with local crop varieties and equipment"
   },
   "contacts": {
-    "maintainer": "COMI Maintainers",
-    "email": "comi@agricultural-systems.org",
-    "issues": "https://github.com/your-org/comi/issues"
+    "maintainer": "MACRO Maintainers",
+    "email": "macro@agricultural-systems.org",
+    "issues": "https://github.com/your-org/macro/issues"
   }
 }
